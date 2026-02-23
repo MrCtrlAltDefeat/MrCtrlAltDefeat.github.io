@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kareem Mahmoud — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #050807;
+      --green: #00ff41;
+      --green-dim: #00cc33;
+      --green-muted: rgba(0,255,65,0.12);
+      --green-border: rgba(0,255,65,0.2);
+      --white: #cdd6cd;
+      --gray: #3a4a3a;
+      --mono: 'Share Tech Mono', monospace;
+      --display: 'Orbitron', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--mono);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── Cursor ── */
+    #cursor {
+      position: fixed; width: 10px; height: 10px;
+      background: var(--green); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      box-shadow: 0 0 8px var(--green), 0 0 20px rgba(0,255,65,0.5);
+      transition: transform 0.08s;
+    }
+    #cursor-ring {
+      position: fixed; width: 28px; height: 28px;
+      border: 1px solid rgba(0,255,65,0.4); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: all 0.12s ease;
+    }
+
+    /* ── Matrix canvas ── */
+    #matrix {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      opacity: 0.035; pointer-events: none; z-index: 0;
+    }
+
+    /* ── Scanlines ── */
+    body::after {
+      content:''; position:fixed; inset:0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+      pointer-events:none; z-index:1;
+    }
+
+    #app { position:relative; z-index:2; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:100;
+      background: rgba(5,8,7,0.92); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--green-border);
+      display: flex; align-items:center; justify-content:space-between;
+      padding: 0 2.5rem; height: 56px;
+    }
+    .nav-logo {
+      font-family: var(--display); font-size: 0.85rem; font-weight:700;
+      color: var(--green); letter-spacing: 0.15em;
+    }
+    .nav-logo span { color: var(--white); opacity:0.5; }
+    .nav-links { display:flex; gap:2rem; }
+    .nav-links a {
+      font-size: 0.72rem; color: var(--white); opacity:0.6;
+      text-decoration:none; letter-spacing:0.12em; text-transform:uppercase;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: var(--green); opacity:1; }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items:center; justify-content:center;
+      padding: 56px 2rem 2rem;
+      position: relative;
+    }
+    .hero-inner { max-width: 800px; width:100%; }
+
+    .hero-pre {
+      font-size: 0.75rem; color: var(--green); letter-spacing:0.2em;
+      text-transform:uppercase; margin-bottom: 1.25rem;
+      opacity:0;
+      animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+    .hero-pre::before { content: '> '; opacity:0.5; }
+
+    .hero-name {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--green);
+      text-shadow: 0 0 30px rgba(0,255,65,0.3), 0 0 60px rgba(0,255,65,0.1);
+      opacity:0;
+      animation: fadeUp 0.6s ease 0.4s forwards;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+      font-weight:400; color: var(--white); opacity:0;
+      letter-spacing: 0.1em;
+      animation: fadeUp 0.6s ease 0.6s forwards;
+      margin-bottom: 2rem;
+    }
+    .hero-title .blink {
+      display:inline-block; width:2px; height:1.1em;
+      background: var(--green); vertical-align:middle;
+      margin-left:4px;
+      animation: blink 1s step-end infinite;
+    }
+
+    .hero-desc {
+      font-size: 0.88rem; line-height:1.9;
+      color: var(--white); opacity:0;
+      max-width: 580px;
+      animation: fadeUp 0.6s ease 0.8s forwards;
+      margin-bottom: 2.5rem;
+      border-left: 2px solid var(--green-border);
+      padding-left: 1rem;
+    }
+
+    .hero-buttons {
+      display:flex; gap:1rem; flex-wrap:wrap;
+      opacity:0; animation: fadeUp 0.6s ease 1s forwards;
+    }
+    .btn {
+      font-family: var(--mono); font-size: 0.78rem;
+      padding: 0.65rem 1.5rem; cursor: none;
+      border-radius: 2px; text-decoration:none;
+      letter-spacing: 0.1em; text-transform:uppercase;
+      transition: all 0.2s; display:inline-flex; align-items:center; gap:0.5rem;
+    }
+    .btn-primary {
+      background: var(--green); color: var(--black);
+      border: 1px solid var(--green); font-weight:700;
+    }
+    .btn-primary:hover { background: transparent; color: var(--green); box-shadow: 0 0 15px rgba(0,255,65,0.3); }
+    .btn-ghost {
+      background: transparent; color: var(--green);
+      border: 1px solid var(--green-border);
+    }
+    .btn-ghost:hover { border-color: var(--green); box-shadow: 0 0 15px rgba(0,255,65,0.15); }
+
+    .hero-stats {
+      position:absolute; right: 3rem; top: 50%;
+      transform: translateY(-50%);
+      display:flex; flex-direction:column; gap:1.5rem;
+      opacity:0; animation: fadeIn 1s ease 1.2s forwards;
+    }
+    .stat { text-align:right; }
+    .stat-num {
+      font-family: var(--display); font-size:1.8rem; font-weight:900;
+      color: var(--green); line-height:1;
+    }
+    .stat-label { font-size:0.65rem; opacity:0.4; letter-spacing:0.1em; text-transform:uppercase; margin-top:0.2rem; }
+
+    /* ── Section header ── */
+    .section-header {
+      display:flex; align-items:center; gap:1rem;
+      margin-bottom: 3rem;
+    }
+    .section-num { font-size: 0.7rem; color: var(--green); opacity:0.5; letter-spacing:0.15em; }
+    .section-title {
+      font-family: var(--display); font-size: 1.4rem; font-weight:700;
+      color: var(--green); letter-spacing: 0.08em; text-transform:uppercase;
+    }
+    .section-line { flex:1; height:1px; background: var(--green-border); }
+
+    /* ── About / Skills ── */
+    #about { padding: 100px 2rem; max-width: 900px; margin: 0 auto; }
+
+    .about-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+
+    .about-text { font-size:0.88rem; line-height:2; color:var(--white); }
+    .about-text p { margin-bottom:1rem; }
+
+    .skills-grid { display:flex; flex-direction:column; gap:1.5rem; }
+    .skill-group-label {
+      font-size:0.65rem; color:var(--green); opacity:0.6;
+      letter-spacing:0.15em; text-transform:uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .skill-tags { display:flex; flex-wrap:wrap; gap:0.4rem; }
+    .tag {
+      font-size: 0.7rem; padding: 0.3rem 0.7rem;
+      border: 1px solid var(--green-border);
+      color: var(--white); opacity:0.8;
+      border-radius: 2px; letter-spacing:0.05em;
+      transition: all 0.2s;
+    }
+    .tag:hover { border-color: var(--green); color:var(--green); opacity:1; }
+
+    /* ── Projects ── */
+    #projects { padding: 100px 2rem; max-width: 900px; margin: 0 auto; }
+
+    .projects-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+    .project-card {
+      background: rgba(0,255,65,0.03);
+      border: 1px solid var(--green-border);
+      padding: 1.75rem;
+      border-radius: 2px;
+      transition: all 0.25s;
+      position:relative; overflow:hidden;
+      cursor: none;
+    }
+    .project-card::before {
+      content:''; position:absolute; top:0; left:0;
+      width:3px; height:100%;
+      background: var(--green); opacity:0;
+      transition: opacity 0.2s;
+    }
+    .project-card:hover { border-color: rgba(0,255,65,0.4); background: rgba(0,255,65,0.05); transform: translateY(-2px); }
+    .project-card:hover::before { opacity:1; }
+
+    .project-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; }
+    .project-name {
+      font-family: var(--display); font-size:0.9rem; font-weight:700;
+      color: var(--green); letter-spacing:0.05em;
+    }
+    .project-badge {
+      font-size:0.6rem; padding:0.2rem 0.5rem;
+      border: 1px solid var(--green-border); color:var(--green);
+      letter-spacing:0.1em; text-transform:uppercase; opacity:0.6;
+    }
+    .project-desc { font-size:0.8rem; line-height:1.8; opacity:0.7; margin-bottom:1.25rem; }
+    .project-tech { display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:1.25rem; }
+    .project-tag {
+      font-size:0.65rem; padding:0.2rem 0.5rem;
+      background: rgba(0,255,65,0.08); color:var(--green);
+      letter-spacing:0.05em;
+    }
+    .project-links { display:flex; gap:1rem; }
+    .project-link {
+      font-size:0.7rem; color:var(--white); opacity:0.5;
+      text-decoration:none; letter-spacing:0.08em;
+      transition:all 0.2s;
+    }
+    .project-link:hover { color:var(--green); opacity:1; }
+    .project-link::before { content:'↗ '; }
+
+    /* ── Experience ── */
+    #experience { padding: 100px 2rem; max-width: 900px; margin: 0 auto; }
+
+    .exp-item {
+      display:grid; grid-template-columns: 180px 1fr;
+      gap: 2rem; margin-bottom: 3rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--green-border);
+    }
+    .exp-item:last-child { border-bottom:none; margin-bottom:0; }
+    .exp-date { font-size:0.72rem; color:var(--green); opacity:0.6; letter-spacing:0.08em; padding-top:0.2rem; }
+    .exp-company { font-family: var(--display); font-size:1rem; font-weight:700; color:var(--green); margin-bottom:0.2rem; }
+    .exp-role { font-size:0.8rem; opacity:0.6; margin-bottom:1rem; letter-spacing:0.05em; }
+    .exp-bullets { list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
+    .exp-bullets li { font-size:0.82rem; line-height:1.8; opacity:0.75; padding-left:1.2rem; position:relative; }
+    .exp-bullets li::before { content:'▸'; position:absolute; left:0; color:var(--green); }
+
+    /* ── Education / Certs ── */
+    #education { padding: 100px 2rem; max-width: 900px; margin: 0 auto; }
+    .edu-grid { display:grid; grid-template-columns: 1fr 1fr; gap:2rem; }
+    .edu-card {
+      border: 1px solid var(--green-border);
+      padding:1.5rem; background: rgba(0,255,65,0.02);
+    }
+    .edu-school { font-family: var(--display); font-size:0.85rem; font-weight:700; color:var(--green); margin-bottom:0.4rem; }
+    .edu-degree { font-size:0.82rem; opacity:0.8; margin-bottom:0.3rem; }
+    .edu-year { font-size:0.72rem; opacity:0.4; letter-spacing:0.08em; margin-bottom:1rem; }
+    .edu-courses { font-size:0.72rem; opacity:0.5; line-height:1.8; }
+
+    .cert-list { display:flex; flex-direction:column; gap:0.75rem; }
+    .cert-item {
+      display:flex; align-items:center; gap:1rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--green-border);
+      background: rgba(0,255,65,0.02);
+      font-size:0.8rem;
+    }
+    .cert-icon { color:var(--green); font-size:0.9rem; }
+    .cert-name { flex:1; }
+    .cert-year { font-size:0.7rem; opacity:0.4; letter-spacing:0.08em; }
+
+    /* ── Contact ── */
+    #contact { padding: 100px 2rem; max-width: 900px; margin: 0 auto; text-align:center; }
+    .contact-title {
+      font-family: var(--display); font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight:900; color:var(--green);
+      text-shadow: 0 0 30px rgba(0,255,65,0.2);
+      margin-bottom:1rem;
+    }
+    .contact-sub { font-size:0.85rem; opacity:0.5; margin-bottom:3rem; line-height:1.8; }
+    .contact-links { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:3rem; }
+    .contact-link {
+      font-size:0.78rem; color:var(--green); text-decoration:none;
+      border: 1px solid var(--green-border); padding:0.75rem 1.5rem;
+      letter-spacing:0.1em; text-transform:uppercase;
+      transition: all 0.2s;
+    }
+    .contact-link:hover { background: var(--green-muted); box-shadow: 0 0 15px rgba(0,255,65,0.15); }
+    .contact-email {
+      font-family: var(--display); font-size:1rem; color:var(--green);
+      letter-spacing:0.05em;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--green-border);
+      padding: 1.5rem 2rem;
+      text-align:center; font-size:0.7rem; opacity:0.3;
+      letter-spacing:0.1em;
+    }
+
+    /* ── Terminal line ── */
+    .terminal-line {
+      font-size:0.72rem; color:var(--green); opacity:0.4;
+      letter-spacing:0.08em; margin-bottom:0.5rem;
+    }
+    .terminal-line::before { content:'$ '; opacity:0.6; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(18px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; }
+      to { opacity:1; }
+    }
+    @keyframes blink {
+      0%, 100% { opacity:1; }
+      50% { opacity:0; }
+    }
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 1px); }
+      40% { transform: translate(2px, -1px); }
+      60% { transform: translate(-1px, 2px); }
+      80% { transform: translate(1px, -2px); }
+    }
+
+    .reveal {
+      opacity:0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity:1; transform: translateY(0); }
+
+    /* ── Mobile ── */
+    @media (max-width: 700px) {
+      .about-grid, .projects-grid, .edu-grid { grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap:0.5rem; }
+      .hero-stats { display:none; }
+      nav .nav-links { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div id="app">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">KM<span>/</span>DEV</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <p class="hero-pre">kareem.mahmoud — computer engineer</p>
+      <h1 class="hero-name">KAREEM<br/>MAHMOUD</h1>
+      <div class="hero-title">
+        Full-Stack Developer &amp; CE Student<span class="blink"></span>
+      </div>
+      <p class="hero-desc">
+        Computer Engineering student at AUS building production-grade web apps.<br/>
+        Specializing in Python backends, Next.js frontends, and systems programming.<br/>
+        Founder of AUS Networks &amp; IT Club. McKinsey Forward Graduate.
+      </p>
+      <div class="hero-buttons">
+        <a href="#projects" class="btn btn-primary">▸ View Projects</a>
+        <a href="mailto:kareem.mahmoud5904@gmail.com" class="btn btn-ghost">✉ Get In Touch</a>
+        <a href="https://github.com/MrCtrlAltDefeat" target="_blank" class="btn btn-ghost">⌥ GitHub</a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">4+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Certs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2026</div>
+        <div class="stat-label">Graduating</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">About</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <div class="terminal-line">whoami</div>
+        <p>
+          B.Sc. Computer Engineering student at the American University of Sharjah,
+          graduating December 2026. I build full-stack web applications, REST APIs,
+          and systems-level programs with clean architecture.
+        </p>
+        <p>
+          Currently building SmartExpense — a production finance tracker using
+          Next.js, FastAPI, PostgreSQL, and Docker. I care about code that's
+          maintainable, deployable, and actually ships.
+        </p>
+        <p>
+          Outside of code: Founder &amp; President of the AUS Networks &amp; IT Club,
+          Tech Member at GDGoC AUS, and graduate of the McKinsey Forward Program.
+        </p>
+      </div>
+
+      <div class="skills-grid reveal">
+        <div class="terminal-line">cat skills.txt</div>
+        <div>
+          <div class="skill-group-label">Languages</div>
+          <div class="skill-tags">
+            <span class="tag">Python</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">C</span>
+            <span class="tag">C++</span>
+            <span class="tag">SQL</span>
+          </div>
+        </div>
+        <div>
+          <div class="skill-group-label">Frontend</div>
+          <div class="skill-tags">
+            <span class="tag">Next.js</span>
+            <span class="tag">React</span>
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">Chrome APIs</span>
+          </div>
+        </div>
+        <div>
+          <div class="skill-group-label">Backend</div>
+          <div class="skill-tags">
+            <span class="tag">FastAPI</span>
+            <span class="tag">REST APIs</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">JWT Auth</span>
+          </div>
+        </div>
+        <div>
+          <div class="skill-group-label">DevOps</div>
+          <div class="skill-tags">
+            <span class="tag">Docker</span>
+            <span class="tag">Git</span>
+            <span class="tag">Vercel</span>
+            <span class="tag">Render</span>
+            <span class="tag">GitHub Actions</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="projects-grid">
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-name">SmartExpense</div>
+          <span class="project-badge">In Dev</span>
+        </div>
+        <p class="project-desc">
+          Full-stack personal finance tracker. Next.js frontend + FastAPI backend connected via REST APIs.
+          JWT auth, normalized PostgreSQL schema, spending analytics dashboard with category breakdowns and budget KPIs.
+          Containerized with Docker, deployed on Vercel + Render.
+        </p>
+        <div class="project-tech">
+          <span class="project-tag">Next.js</span>
+          <span class="project-tag">FastAPI</span>
+          <span class="project-tag">PostgreSQL</span>
+          <span class="project-tag">Docker</span>
+          <span class="project-tag">JWT</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/MrCtrlAltDefeat/smartexpense" target="_blank" class="project-link">GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-name">Dark Pattern Detector</div>
+          <span class="project-badge">Live</span>
+        </div>
+        <p class="project-desc">
+          Chrome extension that detects 6 categories of dark UX patterns in real time using modular JavaScript.
+          Analyzes dynamic DOM, highlights violations inline, and surfaces findings in a popup panel.
+        </p>
+        <div class="project-tech">
+          <span class="project-tag">JavaScript</span>
+          <span class="project-tag">Chrome APIs</span>
+          <span class="project-tag">Manifest V3</span>
+          <span class="project-tag">DOM API</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/MrCtrlAltDefeat/darkpattern-extension" target="_blank" class="project-link">GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-name">Foodo — ERP System</div>
+          <span class="project-badge">Complete</span>
+        </div>
+        <p class="project-desc">
+          Modular ERP system built in Odoo (Python) to redistribute surplus food from corporates to NGOs.
+          PostgreSQL-backed data models managing inventory and 500+ transaction records.
+          REST API integration cut manual reporting by ~30%.
+        </p>
+        <div class="project-tech">
+          <span class="project-tag">Python</span>
+          <span class="project-tag">Odoo</span>
+          <span class="project-tag">PostgreSQL</span>
+          <span class="project-tag">REST APIs</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/MrCtrlAltDefeat/odoo-food-rescue-module" target="_blank" class="project-link">GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <div class="project-name">Producer-Consumer</div>
+          <span class="project-badge">Complete</span>
+        </div>
+        <p class="project-desc">
+          Multithreaded Producer–Consumer system in C using POSIX threads.
+          Implements a circular buffer with mutex locks and semaphore synchronization
+          for thread-safe concurrent access.
+        </p>
+        <div class="project-tech">
+          <span class="project-tag">C</span>
+          <span class="project-tag">POSIX Threads</span>
+          <span class="project-tag">Semaphores</span>
+          <span class="project-tag">Concurrency</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/MrCtrlAltDefeat/multithreaded-producer-consumer" target="_blank" class="project-link">GitHub</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Experience</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Jun 2025 — Aug 2025</div>
+      </div>
+      <div>
+        <div class="exp-company">Fun Robotics</div>
+        <div class="exp-role">STEM Engineer · Dubai, UAE</div>
+        <ul class="exp-bullets">
+          <li>Delivered STEM and computing instruction to 30+ in-person students and 1,000+ virtual learners in a hybrid environment.</li>
+          <li>Designed and assessed 10+ measurable learning objectives per domain using data-driven evaluation and progress-tracking systems.</li>
+          <li>Provided technical troubleshooting and platform support across live and async sessions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Ongoing</div>
+      </div>
+      <div>
+        <div class="exp-company">AUS Networks &amp; IT Club</div>
+        <div class="exp-role">Founder &amp; President · American University of Sharjah</div>
+        <ul class="exp-bullets">
+          <li>Founded and lead the university's dedicated networking and IT club.</li>
+          <li>Organize technical workshops, guest talks, and collaborative projects for members.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item reveal">
+      <div>
+        <div class="exp-date">Ongoing</div>
+      </div>
+      <div>
+        <div class="exp-company">GDGoC AUS</div>
+        <div class="exp-role">Tech Member · Google Developer Groups on Campus</div>
+        <ul class="exp-bullets">
+          <li>Contribute to technical events, hackathons, and developer community initiatives at AUS.</li>
+        </ul>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Education &amp; Certs</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <div class="terminal-line">education.json</div>
+        <div class="edu-school">American University of Sharjah</div>
+        <div class="edu-degree">B.Sc. Computer Engineering</div>
+        <div class="edu-year">Expected Dec 2026</div>
+        <div class="edu-courses">
+          Data Structures &amp; Algorithms · Computer Systems ·
+          Software Engineering · Object Oriented Programming
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="terminal-line">certifications.json</div>
+        <div class="cert-list">
+          <div class="cert-item">
+            <span class="cert-icon">⬡</span>
+            <span class="cert-name">ISC2 Certified in Cybersecurity (CC)</span>
+            <span class="cert-year">2026</span>
+          </div>
+          <div class="cert-item">
+            <span class="cert-icon">⬡</span>
+            <span class="cert-name">Cisco Junior Cybersecurity Analyst</span>
+            <span class="cert-year">2026</span>
+          </div>
+          <div class="cert-item">
+            <span class="cert-icon">⬡</span>
+            <span class="cert-name">EC-Council Web Security Fundamentals</span>
+            <span class="cert-year">2025</span>
+          </div>
+          <div class="cert-item">
+            <span class="cert-icon">⬡</span>
+            <span class="cert-name">McKinsey Forward Program Graduate</span>
+            <span class="cert-year">2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-header reveal" style="justify-content:center; margin-bottom:2rem;">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Contact</h2>
+      <div class="section-line" style="flex:0; width:60px;"></div>
+    </div>
+
+    <div class="contact-title reveal">Let's Build Something.</div>
+    <p class="contact-sub reveal">
+      Open to internships, freelance projects, and collaborations.<br/>
+      Based in Sharjah, UAE — available remotely worldwide.
+    </p>
+
+    <div class="contact-links reveal">
+      <a href="mailto:kareem.mahmoud5904@gmail.com" class="contact-link">✉ Email</a>
+      <a href="https://github.com/MrCtrlAltDefeat" target="_blank" class="contact-link">⌥ GitHub</a>
+      <a href="https://linkedin.com/in/kareem-mahmoud-72b6302b8" target="_blank" class="contact-link">in LinkedIn</a>
+    </div>
+
+    <div class="contact-email reveal">kareem.mahmoud5904@gmail.com</div>
+  </section>
+
+  <footer>
+    <span>© 2025 Kareem Mahmoud</span> &nbsp;·&nbsp;
+    <span>Built with vanilla HTML/CSS/JS</span> &nbsp;·&nbsp;
+    <span>Deployed on GitHub Pages</span>
+  </footer>
+
+</div><!-- #app -->
+
+<script>
+  // ── Matrix rain ──────────────────────────────────────────────────────────────
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  let W, H, cols, drops;
+
+  function initMatrix() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cols = Math.floor(W / 18);
+    drops = Array(cols).fill(1);
+  }
+  initMatrix();
+  window.addEventListener('resize', initMatrix);
+
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(5,8,7,0.05)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#00ff41';
+    ctx.font = '13px Share Tech Mono';
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
+    drops.forEach((y, i) => {
+      const ch = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(ch, i * 18, y * 18);
+      if (y * 18 > H && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    });
+  }
+  setInterval(drawMatrix, 50);
+
+  // ── Custom cursor ─────────────────────────────────────────────────────────────
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  function animateCursor() {
+    cur.style.left = mx + 'px';
+    cur.style.top = my + 'px';
+    rx += (mx - rx) * 0.15;
+    ry += (my - ry) * 0.15;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  document.querySelectorAll('a, button, .project-card, .tag').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '48px'; ring.style.height = '48px';
+      ring.style.borderColor = 'rgba(0,255,65,0.7)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '28px'; ring.style.height = '28px';
+      ring.style.borderColor = 'rgba(0,255,65,0.4)';
+    });
+  });
+
+  // ── Scroll reveal ─────────────────────────────────────────────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ── Typing effect for hero title ──────────────────────────────────────────────
+  const titles = [
+    'Full-Stack Developer',
+    'CE Student @ AUS',
+    'Systems Programmer',
+    'Cybersecurity Enthusiast',
+  ];
+  const titleEl = document.querySelector('.hero-title');
+  let ti = 0, ci = 0, deleting = false;
+
+  function typeTitle() {
+    const current = titles[ti];
+    if (!deleting) {
+      titleEl.innerHTML = current.slice(0, ci + 1) + '<span class="blink"></span>';
+      ci++;
+      if (ci === current.length) { deleting = true; setTimeout(typeTitle, 2000); return; }
+    } else {
+      titleEl.innerHTML = current.slice(0, ci - 1) + '<span class="blink"></span>';
+      ci--;
+      if (ci === 0) { deleting = false; ti = (ti + 1) % titles.length; }
+    }
+    setTimeout(typeTitle, deleting ? 40 : 80);
+  }
+  setTimeout(typeTitle, 1500);
+</script>
+
+</body>
+</html>
