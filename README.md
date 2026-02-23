@@ -2,7 +2,7 @@
 
 Personal portfolio site — hacker-themed, deployed on GitHub Pages.
 
-**Live:** https://MrCtrlAltDefeat.github.io/kareem-portfolio
+**Live:** https://MrCtrlAltDefeat.github.io/
 
 ## Stack
 
