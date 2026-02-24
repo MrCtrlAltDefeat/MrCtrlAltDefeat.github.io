@@ -1,0 +1,40 @@
+name: Sync GitHub Repos
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # runs every day at 3am UTC
+  push:
+    branches: [main]       # also runs on every push
+  workflow_dispatch:       # allows manual trigger from GitHub UI
+
+jobs:
+  sync-repos:
+    name: Fetch repos and update repos.json
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write      # needed to commit repos.json back to the repo
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch repos from GitHub API
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -s \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/users/MrCtrlAltDefeat/repos?sort=updated&per_page=100" \
+            > repos.json
+
+          echo "Fetched $(cat repos.json | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))') repos"
+
+      - name: Commit and push repos.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add repos.json
+          git diff --cached --quiet && echo "No changes to commit" || \
+            (git commit -m "chore: sync repos.json [skip ci]" && git push)
