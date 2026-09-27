@@ -1,104 +1,189 @@
-# Kareem Mahmoud: Engineering Portfolio
+# Kareem Mahmoud Portfolio
 
-A responsive, animated portfolio for the existing `MrCtrlAltDefeat.github.io` repository.
+Personal engineering portfolio of **Kareem Mahmoud**, a Computer Engineering student at the American University of Sharjah.
 
-## Preview
+The site brings together my projects, technical experience, infrastructure and security work, embedded systems, software development, research, certifications, and university involvement.
 
-Open `index.html` directly, or serve this folder with:
+### Live Portfolio
 
-```sh
-python -m http.server 4173
+**[mrctrlaltdefeat.github.io](https://mrctrlaltdefeat.github.io/)**
+
+---
+
+## About the Portfolio
+
+This portfolio is designed as a central place to document the work I have done across different areas of Computer Engineering.
+
+The current portfolio includes:
+
+- Networking and cybersecurity projects
+- Cloud and infrastructure work
+- Embedded systems and FreeRTOS projects
+- Full-stack and systems programming projects
+- Research projects
+- Professional experience
+- Technical skills and tools
+- Leadership and university involvement
+- Certifications and technical learning
+- Detailed project case studies
+- Links to relevant GitHub repositories
+
+Rather than presenting only a list of technologies, the portfolio focuses on the projects and experiences where those technologies were actually used.
+
+---
+
+## Featured Areas
+
+### Networks & Security
+
+Projects and experience involving networking, infrastructure design, virtualization, DNS/DHCP, network security, security labs, and enterprise technologies.
+
+### Cloud & Infrastructure
+
+Work involving technologies such as Microsoft Azure, VMware ESXi, Proxmox, Docker, Active Directory, Infoblox, FortiGate, and related infrastructure tools.
+
+### Software & Systems
+
+Projects built using Python, C/C++, JavaScript, Next.js, FastAPI, PostgreSQL, POSIX threads, Linux, and other software technologies.
+
+### Embedded Systems
+
+Hardware and embedded projects involving ESP32, FreeRTOS, Arduino, sensors, signal processing, and connected systems.
+
+### Research
+
+Academic and engineering research including privacy-preserving indoor localization, acoustic sensing, cybersecurity, and other interdisciplinary projects.
+
+---
+
+## Tech Stack
+
+The portfolio itself is intentionally lightweight and does not require a frontend framework or build system.
+
+- HTML
+- CSS
+- Vanilla JavaScript
+- GitHub Pages
+- GitHub Actions
+
+Some portfolio content is also integrated with GitHub repository data.
+
+---
+
+## Project Structure
+
+```text
+MrCtrlAltDefeat.github.io/
+│
+├── index.html
+├── styles.css
+├── minimal.css
+├── opening.css
+├── case-studies.css
+├── script.js
+├── opening.js
+├── repos.json
+│
+├── assets/
+│   └── ...
+│
+├── projects/
+│   └── Project case studies
+│
+├── legacy/
+│   └── Previous version of the portfolio
+│
+└── .github/
+    └── workflows/
 ```
 
-Then visit http://localhost:4173. Direct file preview works; the optional repository feed uses `repos.json` when served over HTTP. A static fallback remains available offline. The site uses plain HTML, CSS, and JavaScript, with no install or build step. Google Fonts are optional; system fonts are the fallback.
+---
 
-## Included
+## Legacy Portfolio
 
-- About and education
-- 15 curated projects: all 13 supplied project titles, plus the home lab and NFS lab from the CV
-- BetaIT and Fun Robotics experience
-- Skills across networks, security, cloud, software, and embedded systems
-- Leadership and community roles
-- Certifications, coursework, and competition participation
-- Contact links
-- Animated engineering diagram, section reveals, hover states, accessible project expanders, mobile navigation, motion toggle, and reduced-motion support
-- Existing GitHub repository feed and sync workflow preserved
+The repository also preserves the previous version of my portfolio.
 
-## Publish to GitHub Pages
+It can be viewed at:
 
-Target repository: https://github.com/MrCtrlAltDefeat/MrCtrlAltDefeat.github.io
-Expected URL: https://mrctrlaltdefeat.github.io/
+**[mrctrlaltdefeat.github.io/legacy/](https://mrctrlaltdefeat.github.io/legacy/)**
 
-This folder is a clone of your existing repository. The redesign is local until committed and pushed through your authenticated GitHub account.
+The `/legacy/` directory is intentionally kept as an archive rather than deleted.
 
-From this folder:
+It shows an earlier stage of both the portfolio and my development as an engineer. Keeping it available makes it possible to see how the site's design, organization, projects, and overall presentation evolved over time.
 
-```sh
-git add index.html styles.css case-studies.css minimal.css opening.css opening.js script.js assets projects .nojekyll .gitignore README.md .github/workflows/deploy.yml
-git commit -m "Redesign engineering portfolio"
-git push origin main
-```
+The main website at the root of the repository is the current and actively maintained version.
 
-In the GitHub repository, select **Settings → Pages → Source → GitHub Actions**. The included workflow publishes on pushes to `main`. Wait for **Deploy Portfolio to GitHub Pages** to succeed in the Actions tab before treating the redesign as live.
+---
 
-If using the ZIP instead, extract it, then copy its files into your existing repository, including the `.github` folder. Do not upload the ZIP itself as the website. Commit and push as above.
+## Deployment
 
-The deployment stages only public website files. The existing scheduled repository-sync workflow remains unchanged.
+The website is hosted using **GitHub Pages**.
 
-Official instructions: https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+Changes pushed to the main branch can be deployed through the GitHub Actions workflow included in the repository.
 
-## Edit content
+Live site:
 
-- `index.html`: text, project descriptions, sections, and links. All core content is readable without JavaScript.
-- `styles.css`: colors, typography, animation, desktop and mobile layouts.
-- `case-studies.css`: project gallery and detailed story layouts.
-- `projects/`: five detailed project stories with source excerpts.
-- `assets/projects/`: original screenshots, four implementation diagrams, and the project recording.
-- `script.js`: menu, motion preference, section highlighting, and extra repositories.
-- `repos.json`: existing repository feed, updated by the existing GitHub Actions workflow.
+**https://mrctrlaltdefeat.github.io/**
 
-To add a project, duplicate a `.project-row` entry and update its title, category, description, technologies, and verified repository link. Featured cards use `.project-card`.
+---
 
-## Content provenance and pending information
+## Repository Feed
 
-Professional experience, education, technical skills, and the two infrastructure/security labs are based on the supplied CV. Project titles and the Red Palm Weevil expansion are from your messages. Public repository links were checked against the GitHub profile and existing repository data. Community roles and additional credentials are retained from your existing public portfolio.
+The portfolio includes a GitHub repository section for displaying additional work beyond the projects highlighted directly on the site.
 
-RH124 is presented as coursework, not an RHCSA certification. A2RL is presented as participation, not a prize. Specific volunteer roles and prizes from LinkedIn remain deferred at your request. No awards, dates, outcomes, or repository URLs were invented for the projects described only by title.
+Repository information is stored through `repos.json`, allowing the portfolio to surface additional GitHub projects while keeping the main project section curated.
 
-When those details are ready, add dedicated Volunteer and Prizes sections next to Community and Credentials. Add certificate links and project reports when available.
+---
 
-## LinkedIn: deferred
+## Accessibility & Responsive Design
 
-After the redesign is published, use https://mrctrlaltdefeat.github.io/ for your portfolio link. Suggested title: **Kareem Mahmoud | Computer Engineering Portfolio**. Suggested description: **Projects in cybersecurity, embedded systems, full-stack development, and cloud infrastructure, alongside my engineering experience at AUS.**
+The site includes support for:
 
-No LinkedIn profile changes have been made.
+- Responsive desktop and mobile layouts
+- Mobile navigation
+- Keyboard-accessible navigation
+- Reduced-motion preferences
+- Motion controls
+- Accessible project expanders
+- Progressive section animations
 
+The core portfolio content remains accessible without relying entirely on JavaScript.
 
-## Project evidence update
+---
 
-Five detailed stories now cover SmartExpense, the Dark Pattern Detector, Foodo, the producer-consumer system, and the NFS security lab. The landing page links to each story.
+## About Me
 
-Visuals include the supplied extension screenshot, an original Nmap scan excerpt from the security walkthrough, four SVG implementation diagrams, and the original producer-consumer recording (3 minutes 38 seconds, approximately 21 MB). The video loads on demand and has a source-based written walkthrough. It does not include a verbatim caption transcript.
+I am a Computer Engineering student at the **American University of Sharjah**, graduating in **December 2026**.
 
-The diagrams are created from source code and are labeled as diagrams, not application screenshots. Code excerpts include their source filenames and line numbers. The detector study is described as planned; Foodo's impact fields are distinguished from measured outcomes and its unfinished dashboard. Team attribution is retained where the report identifies collaborators. Student IDs and full reports are not included.
+My main interests are in:
 
-Sources used:
-- `darkpattern-ext/scripts/content.js`, its screenshot, and the Fall 2025 progress report.
-- `smartexpense/backend/main.py`, dashboard source, and README.
-- Foodo's batch, pickup, impact, and order models, plus dashboard XML.
-- `producer_consumer.c`, the mini-project report, and demonstration recording.
-- `Security Project Demo Explanation.docx`.
+- Networking
+- Cybersecurity
+- Cloud and infrastructure
+- Systems engineering
+- Embedded systems
+- Software development
 
-This remains a local review version. No deployment or LinkedIn update has been performed.
+I enjoy understanding how different layers of a system connect — from sensors and software to networks, infrastructure, and security.
 
+---
 
-## Minimal design update
+## Connect
 
-The light theme uses system typography, neutral surfaces, blue accents, generous spacing, and restrained motion. All existing page text, links, and code were checked against the previous version and preserved. Two generated conceptual project covers were added; original project images and the video remain. The vector diagrams were recolored without changing their labels or geometry. See ILLUSTRATIONS.md for asset paths and generation prompts. The shared visual overrides are in minimal.css.
+**Portfolio:** [mrctrlaltdefeat.github.io](https://mrctrlaltdefeat.github.io/)
 
-## Opening sequence
+**GitHub:** [github.com/MrCtrlAltDefeat](https://github.com/MrCtrlAltDefeat)
 
-The landing page holds “Hi” until the visitor scrolls. Scrolling progressively reveals the introduction, then naturally brings navigation and About into view; scrolling back reverses the reveal. Direct section links skip the intro, and a keyboard-accessible Skip to content link is available. Reduced-motion preferences disable the greeting’s scaling effect. Earlier background details remain in the expandable background section. `opening.css` and `opening.js` control this sequence.
+**LinkedIn:** Available through the portfolio
 
+---
 
-Projects use a unified 15-card responsive catalog. Original documents are downloadable from the relevant cards and detail pages under assets/resources; the senior design report is intentionally excluded. Existing overview information remains available on the project detail pages. Projects stays selected in the navigation throughout each detail page.
+## Notes
+
+This repository is also used as the source for the live GitHub Pages website.
+
+The portfolio is continuously updated as new projects, experience, certifications, and engineering work are completed.
+
+---
+
+© 2026 Kareem Mahmoud
