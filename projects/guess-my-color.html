@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Arduino color-memory game · Wokwi / PlatformIO">
+  <meta property="og:title" content="Guess My Color | Kareem Mahmoud">
+  <meta property="og:description" content="Arduino color-memory game · Wokwi / PlatformIO">
+  <meta property="og:type" content="website">
+  <title>Guess My Color | Kareem Mahmoud</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23f5f5f7'/%3E%3Cpath%20d='M17%2017v30m28-30L21%2032l24%2015'%20fill='none'%20stroke='%230066cc'%20stroke-width='6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js?v=catalog-1" defer></script>
+<link rel="stylesheet" href="../case-studies.css"><link rel="stylesheet" href="../minimal.css?v=polish-1"><style>.split-media{margin:48px 0}.split-media>summary{cursor:pointer;color:#0066cc;padding:20px 0;font-size:17px}.split-media .case-figure{margin-top:24px}</style></head>
+<body class="case-page"><a class="skip-link" href="#main">Skip to content</a><header class="site-header">
+    <a class="logo" href="../index.html#home" aria-label="Kareem Mahmoud home"><span>&lt;</span>KM<span>/&gt;</span></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="navigation">Menu <span aria-hidden="true">☰</span></button>
+    <nav id="navigation" aria-label="Main navigation"><a href="../index.html#about">About</a><a href="../index.html#projects" aria-current="location">Projects</a><a href="../index.html#experience">Experience</a><a href="../index.html#community">Community</a><a href="../index.html#certifications">Credentials</a></nav>
+    <a class="header-contact" href="../index.html#contact">Let’s connect <span aria-hidden="true">↗</span></a>
+  </header>
+  <main id="main" class="wrap case-main"><section class="case-hero"><a class="back-link" href="../index.html#projects">← All projects</a><h1>Guess My Color</h1><p class="case-lede">Arduino color-memory game · Wokwi / PlatformIO</p><a href="https://github.com/MrCtrlAltDefeat/guess-my-color" target="_blank" rel="noopener noreferrer" class="text-link project-repo-link">View project on GitHub ↗</a></section><dl class="project-snapshot"><div><dt>Context</dt><dd>Hardware simulation project</dd></div><div><dt>Project status</dt><dd>Arduino game implementation</dd></div><div><dt>Tools &amp; methods</dt><dd>Arduino · PlatformIO · Wokwi · C++</dd></div></dl><figure class="case-figure"><a href="../assets/projects/color-game.svg" target="_blank" rel="noopener noreferrer"><img src="../assets/projects/color-game.svg" alt="Illustrated flow based on the supplied game source." loading="lazy"></a><figcaption>Illustrated flow based on the supplied game source. · Open image ↗</figcaption></figure><section class="case-narrative"><h2>Remember, mix, compare</h2><div><p>The player memorizes a random target color, recreates it with red, green, and blue potentiometers, and presses a button to submit. Two RGB LEDs show the target and the player’s mix; a 16 × 2 I²C LCD shows timing and scores.</p></div></section><section class="case-narrative"><h2>Implementation</h2><div><p>A five-state loop controls welcome, target display, guessing, results, and game-over screens. Five rounds progressively shorten the memorization window; hard mode halves timing. Input debouncing and buzzer feedback support interaction.</p><p>The scoring function subtracts the sum of absolute RGB-channel differences from 1,000. It is a simple channel-distance score, not a perceptual color metric.</p></div></section><section class="case-code"><h2>From the source</h2><figure class="code-window"><figcaption>Match My Color/src/main.cpp · calculateScore</figcaption><pre tabindex="0"><code>int calculateScore()
+{
+	int distance = abs((int)targetR - (int)guessR) + abs((int)targetG - (int)guessG) + abs((int)targetB - (int)guessB);
+	
+	return MAX_SCORE_PER_RND - distance;
+}</code></pre></figure></section></main><footer class="wrap"><a class="logo" href="../index.html#home" aria-label="Back to top"><span>&lt;</span>KM<span>/&gt;</span></a><p>© <span id="year">2026</span> Kareem Mahmoud</p><a href="../index.html#home">Back to top ↑</a></footer>
+</body></html>

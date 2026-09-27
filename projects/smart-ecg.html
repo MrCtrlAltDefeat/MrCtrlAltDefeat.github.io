@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="ESP32 · ESP-IDF · FreeRTOS · Wokwi simulation">
+  <meta property="og:title" content="Smart ECG Monitor | Kareem Mahmoud">
+  <meta property="og:description" content="ESP32 · ESP-IDF · FreeRTOS · Wokwi simulation">
+  <meta property="og:type" content="website">
+  <title>Smart ECG Monitor | Kareem Mahmoud</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23f5f5f7'/%3E%3Cpath%20d='M17%2017v30m28-30L21%2032l24%2015'%20fill='none'%20stroke='%230066cc'%20stroke-width='6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js?v=catalog-1" defer></script>
+<link rel="stylesheet" href="../case-studies.css"><link rel="stylesheet" href="../minimal.css?v=polish-1"><style>.split-media{margin:48px 0}.split-media>summary{cursor:pointer;color:#0066cc;padding:20px 0;font-size:17px}.split-media .case-figure{margin-top:24px}</style></head>
+<body class="case-page"><a class="skip-link" href="#main">Skip to content</a><header class="site-header">
+    <a class="logo" href="../index.html#home" aria-label="Kareem Mahmoud home"><span>&lt;</span>KM<span>/&gt;</span></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="navigation">Menu <span aria-hidden="true">☰</span></button>
+    <nav id="navigation" aria-label="Main navigation"><a href="../index.html#about">About</a><a href="../index.html#projects" aria-current="location">Projects</a><a href="../index.html#experience">Experience</a><a href="../index.html#community">Community</a><a href="../index.html#certifications">Credentials</a></nav>
+    <a class="header-contact" href="../index.html#contact">Let’s connect <span aria-hidden="true">↗</span></a>
+  </header>
+  <main id="main" class="wrap case-main"><section class="case-hero"><a class="back-link" href="../index.html#projects">← All projects</a><h1>Smart ECG Monitor</h1><p class="case-lede">ESP32 · ESP-IDF · FreeRTOS · Wokwi simulation</p><a href="https://github.com/MrCtrlAltDefeat/smart-ecg-monitor" target="_blank" rel="noopener noreferrer" class="text-link project-repo-link">View project on GitHub ↗</a></section><dl class="project-snapshot"><div><dt>Context</dt><dd>Embedded signal-processing project</dd></div><div><dt>Project status</dt><dd>Synthetic ECG simulation</dd></div><div><dt>Tools &amp; methods</dt><dd>ESP32 · FreeRTOS · Wokwi · C</dd></div></dl><figure class="case-figure"><a href="../assets/projects/ecg-wokwi-circuit.jpeg" target="_blank" rel="noopener noreferrer"><img src="../assets/projects/ecg-wokwi-circuit.jpeg" alt="Original Wokwi circuit layout for the ESP32 Smart ECG Monitor simulation." loading="lazy"></a><figcaption>Original Wokwi circuit layout for the ESP32 Smart ECG Monitor simulation. · Open image ↗</figcaption></figure><figure class="case-figure"><a href="../assets/projects/ecg-pipeline.svg" target="_blank" rel="noopener noreferrer"><img src="../assets/projects/ecg-pipeline.svg" alt="Pipeline illustration derived from the supplied firmware." loading="lazy"></a><figcaption>Pipeline illustration derived from the supplied firmware. · Open image ↗</figcaption></figure><section class="case-narrative"><h2>A real-time signal pipeline</h2><div><p>The simulator generates ECG-like signals using a McSharry dynamical model. A 200 Hz acquisition task feeds a queue; a filtering and detection task applies a Pan–Tompkins-style pipeline, identifies beats, and estimates heart rate from RR intervals.</p></div></section><section class="case-narrative"><h2>Implemented in the supplied code</h2><div><p>The firmware contains rule-based normal, tachycardia, bradycardia, and irregular-beat classifications; OLED display updates; LED and buzzer alerts; button handling; MPU6050 motion classification; and microSD logging. FreeRTOS tasks and queues separate acquisition, processing, display, and logging.</p><p>The archive is a simulation prototype, not a clinically validated monitor. Its older planning notes list features that changed over development, so the showcase follows the current source rather than treating every proposed peripheral as implemented.</p></div></section><section class="case-narrative"><h2>Team</h2><div><p>Kareem Mahmoud, Abdurrahman Maricar, and Mohamad Dabbagh · COE411 Embedded and Cyber-Physical Systems · Spring 2026.</p></div></section><section class="case-code"><h2>From the source</h2><figure class="code-window"><figcaption>src/main.c · task / classification excerpt</figcaption><pre tabindex="0"><code>static beat_class_t classify_beat(int bpm)
+{
+    if (det.rr_count &gt;= 3) {
+        uint64_t sum = 0;
+        for (int i = 0; i &lt; det.rr_count; i++) sum += det.rr_ring[i];
+        uint32_t mean_rr = (uint32_t)(sum / (uint64_t)det.rr_count);
+        /* rr_head points to the next slot to write, so the most recently
+         * pushed RR sits at (rr_head - 1) mod RR_RING_LEN. */
+        int last_idx = (det.rr_head + RR_RING_LEN - 1) % RR_RING_LEN;
+        uint32_t last_rr = det.rr_ring[last_idx];
+        if (mean_rr &gt; 0) {
+            uint32_t diff = (last_rr &gt; mean_rr)
+                              ? (last_rr - mean_rr)
+                              : (mean_rr - last_rr);
+            if ((diff * 100U) / mean_rr &gt; 20U) {
+                return BEAT_IRREGULAR;
+            }
+        }
+    }
+    if (bpm &gt; 100)             return BEAT_TACHY;
+    if (bpm &gt; 0 &amp;&amp; bpm &lt; 60)   return BEAT_BRADY;
+    return BEAT_NORMAL;
+}</code></pre></figure></section></main><footer class="wrap"><a class="logo" href="../index.html#home" aria-label="Back to top"><span>&lt;</span>KM<span>/&gt;</span></a><p>© <span id="year">2026</span> Kareem Mahmoud</p><a href="../index.html#home">Back to top ↑</a></footer>
+</body></html>

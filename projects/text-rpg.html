@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Java · Observer pattern · Multithreaded game entities">
+  <meta property="og:title" content="Text-Based RPG: Escape A.U.S. | Kareem Mahmoud">
+  <meta property="og:description" content="Java · Observer pattern · Multithreaded game entities">
+  <meta property="og:type" content="website">
+  <title>Text-Based RPG: Escape A.U.S. | Kareem Mahmoud</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23f5f5f7'/%3E%3Cpath%20d='M17%2017v30m28-30L21%2032l24%2015'%20fill='none'%20stroke='%230066cc'%20stroke-width='6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js?v=catalog-1" defer></script>
+<link rel="stylesheet" href="../case-studies.css"><link rel="stylesheet" href="../minimal.css?v=polish-1"><style>.split-media{margin:48px 0}.split-media>summary{cursor:pointer;color:#0066cc;padding:20px 0;font-size:17px}.split-media .case-figure{margin-top:24px}</style></head>
+<body class="case-page"><a class="skip-link" href="#main">Skip to content</a><header class="site-header">
+    <a class="logo" href="../index.html#home" aria-label="Kareem Mahmoud home"><span>&lt;</span>KM<span>/&gt;</span></a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="navigation">Menu <span aria-hidden="true">☰</span></button>
+    <nav id="navigation" aria-label="Main navigation"><a href="../index.html#about">About</a><a href="../index.html#projects" aria-current="location">Projects</a><a href="../index.html#experience">Experience</a><a href="../index.html#community">Community</a><a href="../index.html#certifications">Credentials</a></nav>
+    <a class="header-contact" href="../index.html#contact">Let’s connect <span aria-hidden="true">↗</span></a>
+  </header>
+  <main id="main" class="wrap case-main"><section class="case-hero"><a class="back-link" href="../index.html#projects">← All projects</a><h1>Text-Based RPG: Escape A.U.S.</h1><p class="case-lede">Java · Observer pattern · Multithreaded game entities</p><a href="https://github.com/MrCtrlAltDefeat/text-based-rpg" target="_blank" rel="noopener noreferrer" class="text-link project-repo-link">View project on GitHub ↗</a></section><dl class="project-snapshot"><div><dt>Context</dt><dd>COE421L · Spring 2026</dd></div><div><dt>Project status</dt><dd>Text-based game implementation</dd></div><div><dt>Tools &amp; methods</dt><dd>Java · Threads · Observer pattern</dd></div></dl><figure class="case-figure"><a href="../assets/projects/rpg-map.svg" target="_blank" rel="noopener noreferrer"><img src="../assets/projects/rpg-map.svg" alt="Game progression illustrated from the supplied source and README." loading="lazy"></a><figcaption>Game progression illustrated from the supplied source and README. · Open image ↗</figcaption></figure><section class="case-narrative"><h2>A campus escape</h2><div><p>A student navigates a university controlled by AI impostor professors. The five-room world links the Lobby, Library, Lab, Server Room, and Exit Gate. Collect the ID Card and USB Drive, disable the server, and escape before health runs out.</p></div></section><section class="case-narrative"><h2>Software design</h2><div><p>The game separates engine, player, room, professor, and event-manager responsibilities. Professor entities patrol independently on threads and observe player-entry events. The Player class synchronizes damage updates.</p><p>Commands include movement, looking around, picking up and using items, inventory, health, and quitting. Room access and item use depend on the game state.</p></div></section><section class="case-code"><h2>From the source</h2><figure class="code-window"><figcaption>src/pattern/GameEventManager.java · event dispatch</figcaption><pre tabindex="0"><code>public void notifyObservers(String event, Room room) {
+        for (GameObserver observer : observers) {
+            observer.onEvent(event, room);
+        }
+    }</code></pre></figure></section></main><footer class="wrap"><a class="logo" href="../index.html#home" aria-label="Back to top"><span>&lt;</span>KM<span>/&gt;</span></a><p>© <span id="year">2026</span> Kareem Mahmoud</p><a href="../index.html#home">Back to top ↑</a></footer>
+</body></html>
