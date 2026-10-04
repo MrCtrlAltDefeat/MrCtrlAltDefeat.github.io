@@ -21,25 +21,20 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Prepare public site
         run: |
           mkdir -p _site
-          cp index.html styles.css case-studies.css minimal.css opening.css script.js opening.js repos.json .nojekyll _site/
+          cp index.html styles.css motion.css live.css projects-data.js script.js interactions.js live.js repos.json .nojekyll _site/
           cp -R assets projects legacy _site/
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '_site'
-
+          path: _site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
